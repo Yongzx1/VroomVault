@@ -1,5 +1,4 @@
 <?php
-session_start();
 include("../../dB/config.php");
 include("../../auth/authentication.php");
 include("./includes/header.php");
@@ -8,11 +7,12 @@ include("./includes/sidebar.php");
 ?>
 
 <div class="pagetitle">
-    <h1>Car Listings</h1>
+    <h1>Inventory</h1>
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="../admin/dashboard.php">Home</a></li>
-            <li class="breadcrumb-item active">Cars</li>
+            <li class="breadcrumb-item ">Dashboard</li>
+            <li class="breadcrumb-item active">Inventory</li>
         </ol>
     </nav>
 </div><!-- End Page Title -->
