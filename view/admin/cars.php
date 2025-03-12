@@ -1,4 +1,5 @@
 <?php
+
 include("../../dB/config.php");
 include("../../auth/authentication.php");
 include("./includes/header.php");
@@ -11,7 +12,6 @@ include("./includes/sidebar.php");
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="../admin/dashboard.php">Home</a></li>
-            <li class="breadcrumb-item ">Dashboard</li>
             <li class="breadcrumb-item active">Inventory</li>
         </ol>
     </nav>
@@ -35,6 +35,7 @@ include("./includes/sidebar.php");
                                 <th>Model</th>
                                 <th>Year</th>
                                 <th>Price</th>
+                                <th>Availability</th>
                                 <th>Action</th>
                                 <th>Image</th>
                             </tr>
@@ -52,12 +53,28 @@ include("./includes/sidebar.php");
                         foreach ($query_run as $row) {
                             // Check if image exists, else use default
                             $image_path = (!empty($row['image_url']) && file_exists("../../" . $row['image_url'])) ? "../../" . $row['image_url'] : "../../uploads/default-car.jpg";
+                            
+                            // Assign distinct colors based on availability status
+                            $availability_colors = [
+                                'Available' => '#28a745',  // Green
+                                'Sold' => '#dc3545',       // Red
+                                'Reserve' => '#ffc107'     // Yellow
+                            ];
+                            $badge_color = $availability_colors[$row['availability']] ?? '#6c757d'; // Default Gray
                     ?>
                             <tr>
                                 <td><?= $row['brand']; ?></td>
                                 <td><?= $row['model']; ?></td>
                                 <td><?= $row['year']; ?></td>
                                 <td>$<?= number_format($row['price'], 2); ?></td>
+                                <td>
+                                    <span class="badge availability-badge" data-id="<?= $row['carId']; ?>" style="background-color: <?= $badge_color; ?>; color: white; padding: 5px 10px; border-radius: 5px;">
+                                        <?= $row['availability']; ?>
+                                    </span>
+                                    <button class="btn btn-sm btn-warning change-status" data-id="<?= $row['carId']; ?>" data-status="<?= $row['availability']; ?>" style="cursor: pointer; margin-left: 5px;">
+                                        Change
+                                    </button>
+                                </td>
                                 <td>
                                     <a href="./controller/deleteCarProcess.php?id=<?= $row['carId']; ?>" onclick="return confirm('Are you sure you want to delete this car?')">
                                         <i class="bi bi-trash3" style="font-size: 1.2rem; color: red; cursor: pointer; transition: 0.3s;" 
@@ -75,7 +92,6 @@ include("./includes/sidebar.php");
                     }
                     ?>
 </tbody>
-
                     </table>
                     <!-- End Table with stripped rows -->
                 </div>
@@ -84,9 +100,35 @@ include("./includes/sidebar.php");
     </div>
 </section>
 
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $(document).on('click', '.change-status', function() {
+        let button = $(this);
+        let carId = button.data('id');
+        let currentStatus = button.data('status');
+        let statusOptions = ['Available', 'Sold', 'Reserve'];
+        let newStatus = statusOptions[(statusOptions.indexOf(currentStatus) + 1) % statusOptions.length];
 
+        $.ajax({
+            url: './controller/updateAvailability.php',
+            type: 'POST',
+            data: { carId: carId, availability: newStatus },
+            success: function(response) {
+                let badge = $('span.availability-badge[data-id="' + carId + '"]');
+                let colorMap = { 'Available': '#28a745', 'Sold': '#dc3545', 'Reserve': '#ffc107' };
+                badge.text(newStatus);
+                badge.css('background-color', colorMap[newStatus] || '#6c757d');
+                button.data('status', newStatus);
+            },
+            error: function() {
+                alert('Failed to update status. Please try again.');
+            }
+        });
+    });
+});
+</script>
 
 <?php
 if(isset($_SESSION['message']) && $_SESSION['code'] !='') {
@@ -113,7 +155,6 @@ if(isset($_SESSION['message']) && $_SESSION['code'] !='') {
     unset($_SESSION['code']);
 }     
 ?>
-
 
 <?php
 include("./includes/footer.php");

@@ -1,3 +1,9 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,6 +42,26 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
+  <style>
+.badge {
+    padding: 5px 10px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.badge[data-id][style*="green"] {
+    background-color: green !important;
+}
+
+.badge[data-id][style*="red"] {
+    background-color: red !important;
+}
+
+.badge[data-id][style*="orange"] {
+    background-color: orange !important;
+}
+</style>
+
 </head>
 
 <body>

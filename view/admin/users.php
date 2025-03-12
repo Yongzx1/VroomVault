@@ -1,4 +1,7 @@
 <?php
+ob_start(); // Start output buffering (optional, helps prevent output-related issues)
+session_start(); // Start the session
+
 include("../../dB/config.php");
 include("./includes/header.php");
 include("./includes/topbar.php");

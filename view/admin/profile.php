@@ -1,4 +1,5 @@
 <?php
+ob_start(); // Start output buffering
 session_start();
 include("../../dB/config.php");
 include("./includes/header.php");
@@ -40,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $_SESSION['message'] = "Invalid email format!";
         $_SESSION['code'] = "error";
-        header("Location: editProfile.php");
+        header("Location: profile.php");
         exit();
     }
 
@@ -52,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (mysqli_stmt_execute($stmt)) {
         $_SESSION['message'] = "Profile updated successfully!";
         $_SESSION['code'] = "success";
-        header("Location: editProfile.php");
+        header("Location: profile.php");
         exit();
     } else {
         $_SESSION['message'] = "Error updating profile: " . mysqli_error($conn);
@@ -101,7 +102,7 @@ body {
               <label class="form-label">Phone Number</label>
               <input type="text" name="phoneNumber" class="form-control" value="<?= htmlspecialchars($phoneNumber); ?>">
             </div>
-            <button type="submit" class="btn btn-primary" style="background-color: #ff693b; border: 1px solid #ff693b;">Update Profile</button>
+            <button type="submit" class="btn btn-primary" style="background-color: ##4154F1; border: 1px solid ##4154F1;">Update Profile</button>
           </form>
         </div>
       </div>

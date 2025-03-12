@@ -1,5 +1,39 @@
 <?php
+ob_start(); // Start output buffering (optional, helps prevent output-related issues)
+session_start(); // Start the session
+
 include("../../dB/config.php");
+
+if (!$conn) {
+    die("Database connection failed: " . mysqli_connect_error());
+}
+
+$available_cars = $sold_cars = $reserved_cars = 0; // Ensure variables are initialized
+
+// Query for available cars
+$query_available = "SELECT COUNT(*) AS available_cars FROM cars WHERE availability = 'available'";
+$result_available = mysqli_query($conn, $query_available);
+if ($result_available) {
+    $row = mysqli_fetch_assoc($result_available);
+    $available_cars = $row['available_cars'];
+}
+
+// Query for sold cars
+$query_sold = "SELECT COUNT(*) AS sold_cars FROM cars WHERE availability = 'sold'";
+$result_sold = mysqli_query($conn, $query_sold);
+if ($result_sold) {
+    $row = mysqli_fetch_assoc($result_sold);
+    $sold_cars = $row['sold_cars'];
+}
+
+// Query for reserved cars
+$query_reserved = "SELECT COUNT(*) AS reserved_cars FROM cars WHERE availability = 'reserved'";
+$result_reserved = mysqli_query($conn, $query_reserved);
+if ($result_reserved) {
+    $row = mysqli_fetch_assoc($result_reserved);
+    $reserved_cars = $row['reserved_cars'];
+}
+
 include("../../auth/authentication.php");
 include("./includes/header.php");
 include("./includes/topbar.php");
@@ -7,17 +41,56 @@ include("./includes/sidebar.php");
 ?>
 
 <div class="pagetitle">
-      <h1>Car Listing</h1>
-      <nav>
+    <h1>Dashboard</h1>
+    <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-          <li class="breadcrumb-item">DashBoard</li>
-          <li class="breadcrumb-item active">Car Listing</li>
+            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+            <li class="breadcrumb-item active">Dashboard</li>
         </ol>
-      </nav>
-    </div><!-- End Page Title -->
+    </nav>
+</div><!-- End Page Title -->
 
-    <p>Car Listings Overview. Explore the available cars in our inventory.</p>
+<!-- Cards Row -->
+<div class="row">
+    <!-- Available Cars Card -->
+    <div class="col-lg-4">
+        <div class="card bg-white text-dark mb-4 shadow">
+            <div class="card-body">
+                <h4 class="card-title">Available Cars</h4>
+                <p class="card-text" style="font-size: 1.5rem; font-weight: bold;">
+                    <?= number_format($available_cars) ?> Cars Available
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sold Cars Card -->
+    <div class="col-lg-4">
+        <div class="card bg-success text-white mb-4 shadow">
+            <div class="card-body">
+                <h4 class="card-title">Sold Cars</h4>
+                <p class="card-text" style="font-size: 1.5rem; font-weight: bold;">
+                    <?= number_format($sold_cars) ?> Cars Sold
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reserved Cars Card -->
+    <div class="col-lg-4">
+        <div class="card bg-warning text-dark mb-4 shadow">
+            <div class="card-body">
+                <h4 class="card-title">Reserved Cars</h4>
+                <p class="card-text" style="font-size: 1.5rem; font-weight: bold;">
+                    <?= number_format($reserved_cars) ?> Cars Reserved
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Cards Row -->
+
+<p>Car Listings Overview. Explore the available cars in our inventory.</p>
 
     <section class="section">
       <div class="row">
@@ -264,71 +337,6 @@ include("./includes/sidebar.php");
                   });
                 </script>
                 <!-- End Bar Chart -->
-
-
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-6">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Pie Chart</h5>
-
-              <!-- Pie Chart -->
-              <div id="pieChart"></div>
-
-              <script>
-                document.addEventListener("DOMContentLoaded", () => {
-                  new ApexCharts(document.querySelector("#pieChart"), {
-                    series: [44, 55, 13, 43, 22],
-                    chart: {
-                      height: 350,
-                      type: 'pie',
-                      toolbar: {
-                        show: true
-                      }
-                    },
-                    labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E']
-                  }).render();
-                });
-              </script>
-              <!-- End Pie Chart -->
-
-            </div>
-          </div>
-        </div> 
-        <!-- Pie Chart -->
-
-        <div class="col-lg-6">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Donut Chart</h5>
-
-              <!-- Donut Chart -->
-              <div id="donutChart"></div>
-
-              <script>
-                document.addEventListener("DOMContentLoaded", () => {
-                  new ApexCharts(document.querySelector("#donutChart"), {
-                    series: [44, 55, 13, 43, 22],
-                    chart: {
-                      height: 350,
-                      type: 'donut',
-                      toolbar: {
-                        show: true
-                      }
-                    },
-                    labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
-                  }).render();
-                });
-              </script>
-              <!-- End Donut Chart -->
-
-            </div>
-          </div>
-        </div>
-        <!-- Donut Chart -->
 
 
 
