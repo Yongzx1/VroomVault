@@ -7,13 +7,15 @@ if (isset($_POST['add_car'])) {
     $model = mysqli_real_escape_string($conn, $_POST['model']);
     $year = mysqli_real_escape_string($conn, $_POST['year']);
     $price = mysqli_real_escape_string($conn, $_POST['price']);
+    $description = mysqli_real_escape_string($conn, $_POST['description']); // New field
 
     // Default image path
     $default_image = "uploads/default-car.jpg";
     $final_image = $default_image;
 
     // Image Upload Handling
-    $target_dir = "/uploads"; // Ensure this folder exists
+    $target_dir = "../../uploads/"; // Ensure this folder exists
+
     if (!file_exists($target_dir)) {
         mkdir($target_dir, 0777, true); // Create directory if it doesn't exist
     }
@@ -28,35 +30,37 @@ if (isset($_POST['add_car'])) {
 
         if (in_array($imageFileType, $allowed_types)) {
             if (move_uploaded_file($_FILES["carImage"]["tmp_name"], $target_file)) {
-                $final_image = "uploads/" . $image_name; // Store relative path in DB
+                // Store relative path for DB
+                $final_image = "uploads/" . $image_name;  
             } else {
-                die("File upload failed. Check folder permissions.");
+                $_SESSION['message'] = "File upload failed. Check folder permissions.";
+                $_SESSION['code'] = "error";
+                header("Location: ../cars.php");
+                exit();
             }
         } else {
-            die("Invalid file type: " . $imageFileType);
+            $_SESSION['message'] = "Invalid file type: " . $imageFileType;
+            $_SESSION['code'] = "error";
+            header("Location: ../cars.php");
+            exit();
         }
     }
 
-    // Debugging: Check the final image path before inserting into DB
-    echo "Final image path: " . $final_image;
-    exit();
-
     // Insert into database
-    $query = "INSERT INTO cars (brand, model, year, price, image_url) 
-          VALUES ('$brand', '$model', '$year', '$price', '$final_image')";
+    $query = "INSERT INTO cars (brand, model, year, price, description, image_url) 
+          VALUES ('$brand', '$model', '$year', '$price', '$description', '$final_image')";
 
-echo "SQL Query: " . $query; // Debugging step
-exit();
 
-if (mysqli_query($conn, $query)) {
-    $_SESSION['message'] = "Car added successfully!";
-    $_SESSION['code'] = "success";
-    header("Location: ../cars.php");
-    exit();
-} else {
-    die("Error inserting into database: " . mysqli_error($conn)); // Show error
+    if (mysqli_query($conn, $query)) {
+        $_SESSION['message'] = "Car added successfully!";
+        $_SESSION['code'] = "success";
+        header("Location: ../cars.php");
+        exit();
+    } else {
+        $_SESSION['message'] = "Database Error: " . mysqli_error($conn);
+        $_SESSION['code'] = "error";
+        header("Location: ../cars.php");
+        exit();
+    }
 }
-}
-
-
 ?>
