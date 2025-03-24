@@ -33,12 +33,13 @@ include("./includes/sidebar.php");
                                 <th>Phone</th>
                                 <th>Gender</th>
                                 <th data-type="date" data-format="YYYY/DD/MM">Birthday</th>
+                                <th>Role</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            $query = "SELECT `userId`, `firstName`,`lastName`,`phoneNumber`,`gender`,`birthday` FROM `users`";
+                            $query = "SELECT `userId`, `firstName`, `lastName`, `phoneNumber`, `gender`, `birthday`, `role` FROM `users`";
                             $query_run = mysqli_query($conn, $query);
                             if (!$query_run) {
                                 die("Query failed: " . mysqli_error($conn));
@@ -46,6 +47,8 @@ include("./includes/sidebar.php");
                             if (mysqli_num_rows($query_run) > 0) {
                                 $index = 0;
                                 foreach ($query_run as $row) {
+                                    // Assign badge color based on role
+                                    $roleBadgeClass = ($row['role'] === 'admin') ? 'bg-danger' : 'bg-info';
                                     ?>
                                     <tr>
                                         <td>
@@ -66,6 +69,11 @@ include("./includes/sidebar.php");
                                         <td>
                                             <span class="user-detail" id="birthday-<?= $index; ?>">
                                                 <?= $row['birthday']; ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge <?= $roleBadgeClass; ?>">
+                                                <?= ucfirst($row['role']); ?>
                                             </span>
                                         </td>
                                         <td>

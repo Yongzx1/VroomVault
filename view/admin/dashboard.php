@@ -52,39 +52,38 @@ include("./includes/sidebar.php");
 
 <!-- Cards Row -->
 <div class="row">
-    <!-- Available Cars Card -->
-    <div class="col-lg-4">
-        <div class="card bg-white text-dark mb-4 shadow">
-            <div class="card-body">
-                <h4 class="card-title">Available Cars</h4>
-                <p class="card-text" style="font-size: 1.5rem; font-weight: bold;">
-                    <?= number_format($available_cars) ?> Cars Available
-                </p>
-            </div>
+   <!-- Available Cars Card -->
+<div class="col-lg-4">
+    <div class="card bg-success text-white mb-4 shadow"> <!-- Changed to Green -->
+        <div class="card-body">
+            <h4 class="card-title">Available Cars</h4>
+            <p class="card-text" style="font-size: 1.5rem; font-weight: bold;">
+                <?= number_format($available_cars) ?> Cars Available
+            </p>
         </div>
     </div>
+</div>
 
-    <!-- Sold Cars Card -->
-    <div class="col-lg-4">
-        <div class="card bg-success text-white mb-4 shadow">
-            <div class="card-body">
-                <h4 class="card-title">Sold Cars</h4>
-                <p class="card-text" style="font-size: 1.5rem; font-weight: bold;">
-                    <?= number_format($sold_cars) ?> Cars Sold
-                </p>
-            </div>
+<!-- Sold Cars Card -->
+<div class="col-lg-4">
+    <div class="card bg-danger text-white mb-4 shadow"> <!-- Changed to Red -->
+        <div class="card-body">
+            <h4 class="card-title">Sold Cars</h4>
+            <p class="card-text" style="font-size: 1.5rem; font-weight: bold;">
+                <?= number_format($sold_cars) ?> Cars Sold
+            </p>
         </div>
     </div>
+</div>
 
-    <!-- Reserved Cars Card -->
-    <div class="col-lg-4">
-        <div class="card bg-warning text-dark mb-4 shadow">
-            <div class="card-body">
-                <h4 class="card-title">Reserved Cars</h4>
-                <p class="card-text" style="font-size: 1.5rem; font-weight: bold;">
-                    <?= number_format($reserved_cars) ?> Cars Reserved
-                </p>
-            </div>
+<!-- Reserved Cars Card -->
+<div class="col-lg-4">
+    <div class="card bg-warning text-dark mb-4 shadow"> <!-- Kept as Orange -->
+        <div class="card-body">
+            <h4 class="card-title">Reserved Cars</h4>
+            <p class="card-text" style="font-size: 1.5rem; font-weight: bold;">
+                <?= number_format($reserved_cars) ?> Cars Reserved
+            </p>
         </div>
     </div>
 </div>
