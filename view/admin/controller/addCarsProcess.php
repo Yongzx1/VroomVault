@@ -8,9 +8,10 @@ if (isset($_POST['add_car'])) {
     $model = $_POST['model'];
     $year = $_POST['year'];
     $price = $_POST['price'];
+    $description = $_POST['description'];
     
     // Insert car details without image
-    $query = "INSERT INTO `cars` (brand, model, year, price) VALUES ('$brand', '$model', '$year', '$price')";
+    $query = "INSERT INTO `cars` (brand, model, year, price, description) VALUES ('$brand', '$model', '$year', '$price', '$description')";
     $query_run = mysqli_query($conn, $query);
 
     if ($query_run) {

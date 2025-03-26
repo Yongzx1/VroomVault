@@ -1,4 +1,7 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ?>
 
   <!-- ======= Header ======= -->
@@ -120,8 +123,8 @@
             </li>
 
             <li class="message-item">
-              <a href="#">
-                <img src="../../assets/img/messages-1.jpg" alt="" class="rounded-circle">
+              <a href="../profile.php">
+                <img src="../../assets/img/profile.jpg" alt="" class="rounded-circle">
                 <div>
                   <h4>Maria Hudson</h4>
                   <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
@@ -198,7 +201,7 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+              <a class="dropdown-item d-flex align-items-center" href="profile.php">
                 <i class="bi bi-gear"></i>
                 <span>Account Settings</span>
               </a>
@@ -226,3 +229,5 @@
     </nav><!-- End Icons Navigation -->
 
   </header><!-- End Header -->
+
+  

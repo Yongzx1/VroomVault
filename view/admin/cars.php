@@ -136,6 +136,31 @@ $user_role = isset($_SESSION['role']) ? $_SESSION['role'] : 'user'; // Default t
 <!-- AJAX Script -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<?php
+  if (!empty($_SESSION['message']) && !empty($_SESSION['message_type'])) {
+?>
+      <script>
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "<?= htmlspecialchars($_SESSION['message_type']); ?>",
+          title: "<?= htmlspecialchars($_SESSION['message']); ?>"
+        });
+      </script>
+<?php
+      unset($_SESSION['message']);
+      unset($_SESSION['code']);
+  }
+?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
