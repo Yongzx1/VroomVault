@@ -1,4 +1,6 @@
 <?php
+include("../../auth/authentication.php");
+include("../../dB/config.php");
 include("./includes/header.php");
 include("./includes/topbar.php");
 include("./includes/sidebar.php");
@@ -34,3 +36,31 @@ include("./includes/sidebar.php");
     </div>
     <button type="submit" name="add_car" class="btn btn-primary">Add Car</button>
 </form>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<?php
+  if (!empty($_SESSION['message']) && !empty($_SESSION['message_type'])) {
+?>
+      <script>
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "<?= htmlspecialchars($_SESSION['message_type']); ?>",
+          title: "<?= htmlspecialchars($_SESSION['message']); ?>"
+        });
+      </script>
+<?php
+      unset($_SESSION['message']);
+      unset($_SESSION['code']);
+  }
+?>

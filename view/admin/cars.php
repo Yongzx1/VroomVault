@@ -83,12 +83,13 @@ $user_role = isset($_SESSION['role']) ? $_SESSION['role'] : 'user'; // Default t
                                             <?php } ?>
                                         </td>
                                         <td>
-                                            <a href="./controller/deleteCarProcess.php?id=<?= $row['carId']; ?>" onclick="return confirm('Are you sure you want to delete this car?')">
-                                                <i class="bi bi-trash3" style="font-size: 1.2rem; color: red; cursor: pointer; transition: 0.3s;" 
-                                                onmouseover="this.style.color='darkred'" 
-                                                onmouseout="this.style.color='red'"></i>
-                                            </a>
-                                        </td>
+    <a href="#" onclick="confirmDelete(event, <?= $row['carId']; ?>)">
+        <i class="bi bi-trash3" style="font-size: 1.5rem; color: red; cursor: pointer; transition: 0.3s;" 
+        onmouseover="this.style.color='darkred'" 
+        onmouseout="this.style.color='red'"></i>
+    </a>
+</td>
+
                                         <td>
                                             <img src="<?= $image_path; ?>" class="card-img-top" alt="<?= $row['model']; ?>" 
                                                 style="height: 200px; width: 300px; object-fit: cover;">
@@ -136,8 +137,30 @@ $user_role = isset($_SESSION['role']) ? $_SESSION['role'] : 'user'; // Default t
 <!-- AJAX Script -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function confirmDelete(event, carId) {
+    event.preventDefault(); // Prevents the page from scrolling up
+
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `./controller/deleteCarProcess.php?id=${carId}`;
+        }
+    });
+}
+
+</script>
+
 <?php
-  if (!empty($_SESSION['message']) && !empty($_SESSION['message_type'])) {
+  if (!empty($_SESSION['message']) && !empty($_SESSION['code'])) {
 ?>
       <script>
         const Toast = Swal.mixin({
@@ -152,7 +175,7 @@ $user_role = isset($_SESSION['role']) ? $_SESSION['role'] : 'user'; // Default t
           }
         });
         Toast.fire({
-          icon: "<?= htmlspecialchars($_SESSION['message_type']); ?>",
+          icon: "<?= htmlspecialchars($_SESSION['code']); ?>",
           title: "<?= htmlspecialchars($_SESSION['message']); ?>"
         });
       </script>
@@ -161,6 +184,7 @@ $user_role = isset($_SESSION['role']) ? $_SESSION['role'] : 'user'; // Default t
       unset($_SESSION['code']);
   }
 ?>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>

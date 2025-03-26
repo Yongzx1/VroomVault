@@ -1,4 +1,7 @@
 <?php
+ob_start(); // Start output buffering (optional, helps prevent output-related issues)
+session_start(); // Start the session
+
 include("../../dB/config.php");
 include("../../auth/authenticationForUser.php");
 include("./includes/header.php");
@@ -31,12 +34,13 @@ include("./includes/sidebar.php");
                                 <th>Phone</th>
                                 <th>Gender</th>
                                 <th data-type="date" data-format="YYYY/DD/MM">Birthday</th>
+                                <th>Role</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            $query = "SELECT `userId`, `firstName`,`lastName`,`phoneNumber`,`gender`,`birthday` FROM `users`";
+                            $query = "SELECT userId, firstName, lastName, phoneNumber, gender, birthday, role FROM users";
                             $query_run = mysqli_query($conn, $query);
                             if (!$query_run) {
                                 die("Query failed: " . mysqli_error($conn));
@@ -44,6 +48,8 @@ include("./includes/sidebar.php");
                             if (mysqli_num_rows($query_run) > 0) {
                                 $index = 0;
                                 foreach ($query_run as $row) {
+                                    // Assign badge color based on role
+                                    $roleBadgeClass = ($row['role'] === 'admin') ? 'bg-danger' : 'bg-info';
                                     ?>
                                     <tr>
                                         <td>
@@ -67,8 +73,17 @@ include("./includes/sidebar.php");
                                             </span>
                                         </td>
                                         <td>
-                                            <i class="bi bi-eye" onclick="toggleDetails(<?= $index; ?>)" style="font-size: 1rem; cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#0d6efd'" onmouseout="this.style.color=''"></i>
+                                            <span class="badge <?= $roleBadgeClass; ?>">
+                                                <?= ucfirst($row['role']); ?>
+                                            </span>
                                         </td>
+                                        <td class="text-center">
+    <i id="eye-icon-<?= $index; ?>" class="bi bi-eye" 
+       onclick="toggleDetails(<?= $index; ?>)" 
+       style="font-size: 1.5rem; cursor: pointer; transition: 0.3s;" 
+       onmouseover="this.style.color='#0d6efd'" 
+       onmouseout="this.style.color=''"></i>
+</td>
                                     </tr>
                                     <?php
                                     $index++;
@@ -90,7 +105,7 @@ include("./includes/sidebar.php");
         let elements = ['name', 'phone', 'gender', 'birthday'];
         
         elements.forEach(element => {
-            let span = document.getElementById(`${element}-${index}`);
+            let span = document.getElementById(${element}-${index});
             if (span.innerText.includes('****')) {
                 span.innerText = span.getAttribute('data-original');
             } else {
@@ -101,7 +116,78 @@ include("./includes/sidebar.php");
     }
 </script>
 
+<script>
+function confirmDelete(userId) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `delete_user.php?userId=${userId}`;
+        }
+    });
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<?php
+  if (!empty($_SESSION['message']) && !empty($_SESSION['message_type'])) {
+?>
+      <script>
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "<?= htmlspecialchars($_SESSION['message_type']); ?>",
+          title: "<?= htmlspecialchars($_SESSION['message']); ?>"
+        });
+      </script>
+<?php
+      unset($_SESSION['message']);
+      unset($_SESSION['code']);
+  }
+?>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+function toggleDetails(index) {
+    let elements = ['name', 'phone', 'gender', 'birthday'];
+    let icon = document.getElementById(`eye-icon-${index}`);
+    
+    elements.forEach(element => {
+        let span = document.getElementById(`${element}-${index}`);
+        
+        // If already masked, show original
+        if (span.getAttribute('data-original')) {
+            span.innerText = span.getAttribute('data-original');
+            span.removeAttribute('data-original');
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        } else { 
+            // Mask the details
+            span.setAttribute('data-original', span.innerText);
+            span.innerText = '****';
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        }
+    });
+}
+</script>
 
 <?php
 include("./includes/footer.php");

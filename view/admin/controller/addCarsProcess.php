@@ -26,3 +26,5 @@ if (isset($_POST['add_car'])) {
 }
 
 ?>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

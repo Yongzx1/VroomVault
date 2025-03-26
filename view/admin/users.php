@@ -77,11 +77,15 @@ include("./includes/sidebar.php");
                                             </span>
                                         </td>
                                         <td>
-                                            <i class="bi bi-eye" onclick="toggleDetails(<?= $index; ?>)" style="font-size: 1.5rem; cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#0d6efd'" onmouseout="this.style.color=''"></i>
+                                        <i id="eye-icon-<?= $index; ?>" class="bi bi-eye" 
+       onclick="toggleDetails(<?= $index; ?>)" 
+       style="font-size: 1.5rem; cursor: pointer; transition: 0.3s;" 
+       onmouseover="this.style.color='#0d6efd'" 
+       onmouseout="this.style.color=''"></i>
                                             
-                                            <a href="edit_user.php?userId=<?= $row['userId']; ?>">
-                                                <i class="bi bi-pencil-square" style="font-size: 1.5rem; color: green; cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='darkgreen'" onmouseout="this.style.color='green'"></i>
-                                            </a>
+       <a href="#" onclick="confirmEdit(<?= $row['userId']; ?>)">
+    <i class="bi bi-pencil-square" style="font-size: 1.5rem; color: green; cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='darkgreen'" onmouseout="this.style.color='green'"></i>
+</a>
                                             
                                             <a href="#" onclick="confirmDelete(<?= $row['userId']; ?>)">
     <i class="bi bi-trash3" style="font-size: 1.5rem; color: red; cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='darkred'" onmouseout="this.style.color='red'"></i>
@@ -166,6 +170,49 @@ function confirmDelete(userId) {
 ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+function toggleDetails(index) {
+    let elements = ['name', 'phone', 'gender', 'birthday'];
+    let icon = document.getElementById(`eye-icon-${index}`);
+    
+    elements.forEach(element => {
+        let span = document.getElementById(`${element}-${index}`);
+        
+        // If already masked, show original
+        if (span.getAttribute('data-original')) {
+            span.innerText = span.getAttribute('data-original');
+            span.removeAttribute('data-original');
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        } else { 
+            // Mask the details
+            span.setAttribute('data-original', span.innerText);
+            span.innerText = '****';
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        }
+    });
+}
+</script>
+
+<script>
+function confirmEdit(userId) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You are about to edit this user's details.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#28a745",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, edit it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `edit_user.php?userId=${userId}`;
+        }
+    });
+}
+</script>
 
 <?php
 include("./includes/footer.php");
