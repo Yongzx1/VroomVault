@@ -77,13 +77,13 @@ include("./includes/sidebar.php");
                                             </span>
                                         </td>
                                         <td>
-                                            <i class="bi bi-eye" onclick="toggleDetails(<?= $index; ?>)" style="font-size: 1rem; cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#0d6efd'" onmouseout="this.style.color=''"></i>
+                                            <i class="bi bi-eye" onclick="toggleDetails(<?= $index; ?>)" style="font-size: 1.5rem; cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#0d6efd'" onmouseout="this.style.color=''"></i>
                                             
                                             <a href="edit_user.php?userId=<?= $row['userId']; ?>">
-                                                <i class="bi bi-pencil-square" style="font-size: 1rem; color: green; cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='darkgreen'" onmouseout="this.style.color='green'"></i>
+                                                <i class="bi bi-pencil-square" style="font-size: 1.5rem; color: green; cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='darkgreen'" onmouseout="this.style.color='green'"></i>
                                             </a>
                                             
-                                            <i class="bi bi-trash3" style="font-size: 1rem; color: red; cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='darkred'" onmouseout="this.style.color='red'"></i>
+                                            <i class="bi bi-trash3" style="font-size: 1.5rem; color: red; cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='darkred'" onmouseout="this.style.color='red'"></i>
                                         </td>
                                     </tr>
                                     <?php
@@ -116,6 +116,7 @@ include("./includes/sidebar.php");
         });
     }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <?php
 include("./includes/footer.php");

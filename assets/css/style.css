@@ -1252,3 +1252,7 @@ h6 {
 .badge[data-id][style*="orange"] {
   background-color: orange !important;
 }
+
+.dropdown-menu {
+  z-index: 1050 !important;
+}

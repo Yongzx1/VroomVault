@@ -31,13 +31,20 @@ if($login_query_run){
         ];
 
         if($userRole == 'admin'){
+            $_SESSION['message'] = "You are now logged in as ADMIN.";
+            $_SESSION['code'] = "success";
             header('Location: ../view/admin/index.php');
-        }else if($userRole == 'user'){
-            header('Location: ../view/users/index.php');
-        }else{
+            exit();
+        } else if($userRole == 'user'){
+            $_SESSION['message'] = "You are now logged in as USER.";
+            $_SESSION['code'] = "success";
+            header('Location: ../view/users/index.php'); // Move exit() after this line
+            exit();
+        } else {
             header('Location: ../login.php');
+            exit();
         }
-        exit();
+        
 
     }else {
         $_SESSION['message'] = "Invalid Email Address or Password";
