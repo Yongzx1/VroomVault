@@ -39,7 +39,7 @@ include("./includes/sidebar.php");
                         </thead>
                         <tbody>
                             <?php
-                            $query = "SELECT `userId`, `firstName`, `lastName`, `phoneNumber`, `gender`, `birthday`, `role` FROM `users`";
+                            $query = "SELECT userId, firstName, lastName, phoneNumber, gender, birthday, role FROM users";
                             $query_run = mysqli_query($conn, $query);
                             if (!$query_run) {
                                 die("Query failed: " . mysqli_error($conn));
@@ -83,7 +83,9 @@ include("./includes/sidebar.php");
                                                 <i class="bi bi-pencil-square" style="font-size: 1.5rem; color: green; cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='darkgreen'" onmouseout="this.style.color='green'"></i>
                                             </a>
                                             
-                                            <i class="bi bi-trash3" style="font-size: 1.5rem; color: red; cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='darkred'" onmouseout="this.style.color='red'"></i>
+                                            <a href="#" onclick="confirmDelete(<?= $row['userId']; ?>)">
+    <i class="bi bi-trash3" style="font-size: 1.5rem; color: red; cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='darkred'" onmouseout="this.style.color='red'"></i>
+</a>
                                         </td>
                                     </tr>
                                     <?php
@@ -106,7 +108,7 @@ include("./includes/sidebar.php");
         let elements = ['name', 'phone', 'gender', 'birthday'];
         
         elements.forEach(element => {
-            let span = document.getElementById(`${element}-${index}`);
+            let span = document.getElementById(${element}-${index});
             if (span.innerText.includes('****')) {
                 span.innerText = span.getAttribute('data-original');
             } else {
@@ -116,7 +118,54 @@ include("./includes/sidebar.php");
         });
     }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+function confirmDelete(userId) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `delete_user.php?userId=${userId}`;
+        }
+    });
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<?php
+  if (!empty($_SESSION['message']) && !empty($_SESSION['message_type'])) {
+?>
+      <script>
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "<?= htmlspecialchars($_SESSION['message_type']); ?>",
+          title: "<?= htmlspecialchars($_SESSION['message']); ?>"
+        });
+      </script>
+<?php
+      unset($_SESSION['message']);
+      unset($_SESSION['code']);
+  }
+?>
+
+
 
 <?php
 include("./includes/footer.php");
