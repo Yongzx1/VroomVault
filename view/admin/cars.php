@@ -1,11 +1,18 @@
 <?php
+session_start(); // Ensure session is started at the top of the file
+
+if (!isset($_SESSION['role'])) {
+    $_SESSION['role'] = 'user'; // Default role
+}
+
+$user_role = $_SESSION['role'];
 include("../../dB/config.php");
 include("../../auth/authentication.php");
 include("./includes/header.php");
 include("./includes/topbar.php");
 include("./includes/sidebar.php");
 
-$user_role = isset($_SESSION['role']) ? $_SESSION['role'] : 'user'; // Default to 'user'
+$user_role = $_SESSION['role'] ?? 'user';
 
 ?>
 
@@ -70,18 +77,20 @@ $user_role = isset($_SESSION['role']) ? $_SESSION['role'] : 'user'; // Default t
                                         <td><?= $row['year']; ?></td>
                                         <td>$<?= number_format($row['price'], 2); ?></td>
                                         <td>
-                                            <span class="badge availability-badge" data-car-id="<?= $row['carId']; ?>" 
-                                                style="background-color: <?= $badge_color; ?>; color: white; padding: 5px 10px; border-radius: 5px;">
-                                                <?= ucfirst($row['availability']); ?>
-                                            </span>
+    <span class="badge availability-badge" 
+        data-car-id="<?= $row['carId']; ?>" 
+        data-availability="<?= $row['availability']; ?>"
+        style="background-color: <?= $badge_color; ?>; color: white; padding: 5px 10px; border-radius: 5px; cursor: <?= ($user_role === 'admin') ? 'pointer' : 'default'; ?>;">
+        <?= ucfirst($row['availability']); ?>
+    </span>
 
-                                            <?php if ($user_role === 'admin') { ?>
-                                                <!-- Edit Icon -->
-                                                <i class="bi bi-pencil-square edit-availability-icon" style="font-size: 1.2rem; color: #007bff; cursor: pointer; margin-left: 10px;"
-                                                    data-car-id="<?= $row['carId']; ?>" 
-                                                    data-availability="<?= $row['availability']; ?>"></i>
-                                            <?php } ?>
-                                        </td>
+    <?php if ($user_role === 'admin') { ?>
+        <i class="bi bi-pencil-square edit-availability-icon" 
+            style="font-size: 1.2rem; color: #007bff; cursor: pointer; margin-left: 10px;"
+            data-car-id="<?= $row['carId']; ?>" 
+            data-availability="<?= $row['availability']; ?>"></i>
+    <?php } ?>
+</td>
                                         <td>
     <a href="#" onclick="confirmDelete(event, <?= $row['carId']; ?>)">
         <i class="bi bi-trash3" style="font-size: 1.5rem; color: red; cursor: pointer; transition: 0.3s;" 
@@ -191,8 +200,10 @@ function confirmDelete(event, carId) {
 $(document).ready(function() {
     var carId = 0;
 
-    // Open modal when clicking the edit icon
-    $(".edit-availability-icon").click(function() {
+    // Open modal when clicking the availability badge or the edit icon (Admins only)
+    $(".availability-badge, .edit-availability-icon").click(function() {
+        if ("<?= $user_role ?>" !== "admin") return; // Prevent non-admins
+
         carId = $(this).data("car-id");
         var currentAvailability = $(this).data("availability");
 
@@ -226,9 +237,11 @@ $(document).ready(function() {
                         "reserved": "#ff9800"
                     }[newAvailability] || "#6c757d";
 
+                    // Update badge text & color instantly
                     $("span[data-car-id='" + carId + "']")
                         .text(newAvailability.charAt(0).toUpperCase() + newAvailability.slice(1))
-                        .css("background-color", badgeColor);
+                        .css("background-color", badgeColor)
+                        .data("availability", newAvailability);
 
                     $("#editAvailabilityModal").modal("hide");
                 } else {
@@ -238,6 +251,13 @@ $(document).ready(function() {
                         text: response.message
                     });
                 }
+            },
+            error: function() {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: "Something went wrong. Please try again."
+                });
             }
         });
     });

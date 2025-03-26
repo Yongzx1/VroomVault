@@ -1,33 +1,28 @@
 <?php
+include("../../dB/config.php");
 session_start();
-include("../../dB/config.php"); // Adjust the path if needed
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $carId = $_POST['carId'];
-    $newAvailability = $_POST['availability'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['carId'], $_POST['availability'])) {
+    $carId = mysqli_real_escape_string($conn, $_POST['carId']);
+    $availability = mysqli_real_escape_string($conn, $_POST['availability']);
 
-    // Validate input
-    $validStatuses = ['available', 'sold', 'reserved'];
-    if (!in_array(strtolower($newAvailability), $validStatuses)) {
-        echo json_encode(['success' => false, 'message' => 'Invalid availability status.']);
-        exit;
+    // Validate availability options
+    $allowed_statuses = ['available', 'sold', 'reserved'];
+    if (!in_array($availability, $allowed_statuses)) {
+        echo json_encode(["success" => false, "message" => "Invalid availability status."]);
+        exit();
     }
 
-    // Update the database
-    $query = "UPDATE cars SET availability = ? WHERE carId = ?";
-    $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "si", $newAvailability, $carId);
-
-    if (mysqli_stmt_execute($stmt)) {
-        echo json_encode(['success' => true]);
+    // Update query
+    $query = "UPDATE cars SET availability='$availability' WHERE carId='$carId'";
+    if (mysqli_query($conn, $query)) {
+        $_SESSION['message'] = "Car availability updated successfully!";
+        $_SESSION['code'] = "success";
+        echo json_encode(["success" => true]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Database update failed.']);
+        echo json_encode(["success" => false, "message" => "Error updating availability: " . mysqli_error($conn)]);
     }
-
-    mysqli_stmt_close($stmt);
-    mysqli_close($conn);
 } else {
-    echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
+    echo json_encode(["success" => false, "message" => "Invalid request."]);
 }
 ?>
-    
