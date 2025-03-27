@@ -196,7 +196,7 @@ function confirmDelete(event, carId) {
 </script>
 
 <?php
-  if (!empty($_SESSION['message']) && !empty($_SESSION['code'])) {
+  if (!empty($_SESSION['message']) && !empty($_SESSION['message_type'])) {
 ?>
       <script>
         const Toast = Swal.mixin({
@@ -211,7 +211,7 @@ function confirmDelete(event, carId) {
           }
         });
         Toast.fire({
-          icon: "<?= htmlspecialchars($_SESSION['code']); ?>",
+          icon: "<?= htmlspecialchars($_SESSION['message_type']); ?>",
           title: "<?= htmlspecialchars($_SESSION['message']); ?>"
         });
       </script>
