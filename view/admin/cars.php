@@ -1,19 +1,15 @@
 <?php
-session_start(); // Ensure session is started at the top of the file
+session_start(); // Ensure session starts first
 
-if (!isset($_SESSION['role'])) {
-    $_SESSION['role'] = 'user'; // Default role
-}
-
+// Set default role if not set
+$_SESSION['role'] = $_SESSION['role'] ?? 'user';
 $user_role = $_SESSION['role'];
+
 include("../../dB/config.php");
 include("../../auth/authentication.php");
 include("./includes/header.php");
 include("./includes/topbar.php");
 include("./includes/sidebar.php");
-
-$user_role = $_SESSION['role'] ?? 'user';
-
 ?>
 
 <div class="pagetitle">
@@ -33,7 +29,38 @@ $user_role = $_SESSION['role'] ?? 'user';
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0">Cars</h5>
-                        <a href="addCars.php" class="btn btn-primary">Add New Car</a>
+                        <a href="addCars.php" class="btn btn-primary glow-button">Add New Car</a>
+
+<style>
+    .glow-button {
+    position: relative;
+    background-color: transparent;
+    border: 2px solid transparent;
+    color: #007bff;
+    padding: 8px 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.3s ease-in-out;
+    border-radius: 5px;
+    border-image: linear-gradient(90deg, #007bff, #00c3ff, #007bff) 1;
+    border-image-slice: 1;
+    animation: running-border 2s linear infinite;
+}
+
+.glow-button:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+@keyframes running-border {
+    0% { border-image-source: linear-gradient(0deg, #007bff, #00c3ff, #007bff); }
+    25% { border-image-source: linear-gradient(90deg, #007bff, #00c3ff, #007bff); }
+    50% { border-image-source: linear-gradient(180deg, #007bff, #00c3ff, #007bff); }
+    75% { border-image-source: linear-gradient(270deg, #007bff, #00c3ff, #007bff); }
+    100% { border-image-source: linear-gradient(360deg, #007bff, #00c3ff, #007bff); }
+}
+</style>
                     </div>
 
                     <!-- Table with stripped rows -->

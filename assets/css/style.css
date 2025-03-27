@@ -1258,3 +1258,11 @@ h6 {
 .dropdown-menu {
   z-index: 1050 !important;
 }
+
+.card-img-top {
+  transition: transform 0.3s ease-in-out;
+}
+
+.card-img-top:hover {
+  transform: scale(1.1);
+}
